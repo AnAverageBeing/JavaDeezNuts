@@ -168,17 +168,20 @@ func getGeoLocation(ipAddress string) string {
 	defer response.Body.Close()
 
 	var geoInfo struct {
-		City      string `json:"city"`
-		Region    string `json:"regionName"`
-		Country   string `json:"country"`
-		Location  string `json:"lat"`
-		Longitude string `json:"lon"`
+		Success bool   `json:"status"`
+		City    string `json:"city"`
+		Region  string `json:"regionName"`
+		Country string `json:"country"`
 	}
 
 	err = json.NewDecoder(response.Body).Decode(&geoInfo)
 	if err != nil {
 		log.Printf("Error parsing geo-location data: %s", err)
 		return "Unknown"
+	}
+
+	if !geoInfo.Success {
+		return "UNABLE TO GET"
 	}
 
 	// Construct a string containing the relevant geo-location information
