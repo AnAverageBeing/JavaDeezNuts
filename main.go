@@ -123,7 +123,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 // logRequestData logs the relevant data of the incoming request.
 func logRequestData(r *http.Request) {
 	// Get the request time
-	requestTime := time.Now().Format(time.DateTime)
+	requestTime := time.Now().Format(time.ANSIC)
 
 	// Get the user's IP address from the CF-Connecting-IP header
 	ipAddress := r.Header.Get("CF-Connecting-IP")
