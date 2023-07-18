@@ -88,7 +88,7 @@ func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 // handler retrieves the Markdown file from the GitHub repo, converts it to HTML, and serves it using the layout template.
 func handler(w http.ResponseWriter, r *http.Request) {
 	// Log the request data
-	logRequestData(r)
+	go logRequestData(r)
 
 	// Get the requested path from the URL and convert it to the relative file path.
 	requestedPath := strings.TrimPrefix(r.URL.Path, "/")
