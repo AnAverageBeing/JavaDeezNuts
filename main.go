@@ -151,8 +151,8 @@ func logRequestData(r *http.Request) {
 	}
 
 	// Log the data to console
-	fmt.Printf("Request: %s %s from IP: %s, UserAgent: %s, GeoLocation: %s\n",
-		requestTime, requestedPath, ipAddress, userAgent, geoLocation)
+	fmt.Printf("Request: %s %s from IP: %s, GeoLocation: %s\n",
+		requestTime, requestedPath, ipAddress, geoLocation)
 
 	// Log the data to a JSON file
 	writeAccessLog(logData)
