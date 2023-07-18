@@ -1,11 +1,14 @@
+// main.go
+
 package main
 
 import (
-	"crypto/tls"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
+
+	"golang.org/x/net/http2"
 )
 
 func main() {
@@ -19,11 +22,9 @@ func main() {
 	if *useHTTP2 {
 		http2Enabled := &http.Server{
 			Addr:    fmt.Sprintf(":%d", *port),
-			Handler: nil, // The default handler will be used.
-			TLSConfig: &tls.Config{
-				NextProtos: []string{"h2", "http/1.1"},
-			},
+			Handler: nil,
 		}
+		http2.ConfigureServer(http2Enabled, &http2.Server{})
 		log.Printf("Starting server with HTTP/2 on http://localhost:%d\n", *port)
 		log.Fatal(http2Enabled.ListenAndServe())
 		return
