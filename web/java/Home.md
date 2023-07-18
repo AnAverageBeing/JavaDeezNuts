@@ -14,4 +14,4 @@ class DeezNuts {
 
 Dont worry u will soon understand this code
 <br><br>
-<button onclick="window.location.href = 'pages/0.md';">Next</button>
+<button onclick="window.location.href = window.location.origin + '/java/pages/0.md';">Next</button>
