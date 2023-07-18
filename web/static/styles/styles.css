@@ -88,7 +88,7 @@ pre code {
 
 code {
   overflow-x: auto;
-  border: 2px solid var(--primary-color);
+  border: 2px solid #ac2041cd;
 }
 
 /* Links */
