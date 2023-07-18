@@ -180,7 +180,7 @@ func getGeoLocation(ipAddress string) string {
 		return "Unknown"
 	}
 
-	if strings.Compare(geoInfo.Success, "success") == 0 {
+	if strings.Compare(geoInfo.Success, "success") != 0 {
 		return "UNABLE TO GET"
 	}
 
