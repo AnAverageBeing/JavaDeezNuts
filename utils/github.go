@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -24,7 +25,7 @@ var httpClient = &http.Client{
 // FetchFileFromGitHub fetches a file from a public GitHub repository and returns its contents as a string.
 func FetchFileFromGitHub(filePath string) (string, error) {
 	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/main/%s", username, repo, filePath)
-
+	log.Println(url)
 	resp, err := httpClient.Get(url)
 	if err != nil {
 		return "", err

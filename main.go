@@ -26,7 +26,7 @@ type Data struct {
 
 // renderTemplate reads the template from the file and renders it with the given data.
 func renderTemplate(w http.ResponseWriter, tmpl string, data Data) {
-	tmplPath := filepath.Join(templateDir, tmpl)
+	tmplPath := filepath.Join(repoRoot, templateDir, tmpl)
 	tmplContent, err := utils.FetchFileFromGitHub(tmplPath)
 	if err != nil {
 		http.Error(w, "Error fetching template: "+err.Error(), http.StatusInternalServerError)
@@ -56,7 +56,7 @@ func markdownToHTML(mdContent string) template.HTML {
 func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path[len("/static/"):]
 
-	content, err := utils.FetchFileFromGitHub(filepath.Join(staticDir, filePath))
+	content, err := utils.FetchFileFromGitHub(filepath.Join(repoRoot, staticDir, filePath))
 	if err != nil {
 		http.Error(w, "Error fetching static file: "+err.Error(), http.StatusInternalServerError)
 		return
