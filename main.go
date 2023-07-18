@@ -41,9 +41,9 @@ type AccessLog struct {
 }
 
 // renderTemplate reads the template from the file and renders it with the given data.
-func renderTemplate(w http.ResponseWriter, tmpl string, data Data) {
+func renderTemplate(w http.ResponseWriter, tmpl string, data Data, useCache bool) {
 	tmplPath := filepath.Join(repoRoot, templateDir, tmpl)
-	tmplContent, err := utils.FetchFileFromGitHub(tmplPath)
+	tmplContent, err := utils.FetchFileFromGitHub(tmplPath, true)
 	if err != nil {
 		http.Error(w, "Error fetching template: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -71,7 +71,7 @@ func markdownToHTML(mdContent string) template.HTML {
 // handleStaticFile fetches and serves the static files from the GitHub repository.
 func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path[len("/static/"):]
-	content, err := utils.FetchFileFromGitHub(filepath.Join(repoRoot, staticDir, filePath))
+	content, err := utils.FetchFileFromGitHub(filepath.Join(repoRoot, staticDir, filePath), true)
 	if err != nil {
 		http.Error(w, "Error fetching static file: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -97,7 +97,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		filePath = "web/java/Home.md"
 	}
 	// Fetch the content of the Markdown file from GitHub.
-	mdContent, err := utils.FetchFileFromGitHub(filePath)
+	mdContent, err := utils.FetchFileFromGitHub(filePath, false)
 	if err != nil {
 		http.Error(w, "Error fetching file: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -116,8 +116,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		Content: htmlContent,
 	}
 
+	cacheParam := r.URL.Query().Get("cache")
+	useCache := cacheParam != "false"
 	// Render the template with the data.
-	renderTemplate(w, "layout.html", data)
+	go renderTemplate(w, "layout.html", data, useCache)
 }
 
 // logRequestData logs the relevant data of the incoming request.
