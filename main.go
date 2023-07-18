@@ -217,6 +217,9 @@ func main() {
 	useHTTP2 := flag.Bool("http2", true, "Enable HTTP/2")
 	flag.Parse()
 
+	http.HandleFunc("/", handler)
+	http.HandleFunc("/static/", handleStaticFile)
+
 	// Enable HTTP/2 if specified
 	if *useHTTP2 {
 		http2Enabled := &http.Server{
@@ -232,8 +235,6 @@ func main() {
 	}
 
 	// Otherwise, continue with HTTP/1.1
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/static/", handleStaticFile)
 
 	fmt.Printf("Starting server on http://localhost:%d\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
