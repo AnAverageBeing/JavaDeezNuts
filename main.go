@@ -44,7 +44,7 @@ type AccessLog struct {
 // renderTemplate reads the template from the file and renders it with the given data.
 func renderTemplate(w http.ResponseWriter, tmpl string, data Data, useCache bool) {
 	tmplPath := filepath.Join(repoRoot, templateDir, tmpl)
-	tmplContent, err := utils.FetchFileFromGitHub(tmplPath, true)
+	tmplContent, err := utils.FetchFileFromGitHub(tmplPath, useCache)
 	if err != nil {
 		http.Error(w, "Error fetching template: "+err.Error(), http.StatusInternalServerError)
 		return
