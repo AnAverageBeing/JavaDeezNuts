@@ -123,7 +123,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 // logRequestData logs the relevant data of the incoming request.
 func logRequestData(r *http.Request) {
 	// Get the request time
-	requestTime := time.Now().Format(time.RFC3339)
+	requestTime := time.Now().Format(time.DateTime)
 
 	// Get the user's IP address from the CF-Connecting-IP header
 	ipAddress := r.Header.Get("CF-Connecting-IP")
@@ -151,8 +151,8 @@ func logRequestData(r *http.Request) {
 	}
 
 	// Log the data to console
-	fmt.Printf("Request: %s %s from IP: %s, GeoLocation: %s\n",
-		requestTime, requestedPath, ipAddress, geoLocation)
+	fmt.Printf("[%s] IP: %s Requested: %s, GeoLocation: %s\n",
+		requestTime, ipAddress, requestedPath, geoLocation)
 
 	// Log the data to a JSON file
 	writeAccessLog(logData)
