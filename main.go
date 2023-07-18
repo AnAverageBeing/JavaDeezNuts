@@ -61,6 +61,9 @@ func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if strings.HasSuffix(filePath, ".css") {
+		w.Header().Set("Content-Type", "text/css")
+	}
 	w.Write([]byte(content))
 }
 
