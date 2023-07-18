@@ -55,14 +55,12 @@ func markdownToHTML(mdContent string) template.HTML {
 // handleStaticFile fetches and serves the static files from the GitHub repository.
 func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path[len("/static/"):]
-	fmt.Println(filePath)
 	content, err := utils.FetchFileFromGitHub(filepath.Join(repoRoot, staticDir, filePath))
 	if err != nil {
 		http.Error(w, "Error fetching static file: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type", http.DetectContentType([]byte(content)))
 	w.Write([]byte(content))
 }
 
