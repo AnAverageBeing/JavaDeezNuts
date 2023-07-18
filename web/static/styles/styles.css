@@ -1,0 +1,259 @@
+/* Variables */
+:root {
+  --primary-color: #EF476F;
+  --secondary-color: #F8F8F8;
+  --background-color: #1B1B1B;
+  --code-background: #2B2B2B;
+  --quote-border-color: #EF476F;
+  --note-border-color: #EF476F;
+  --link-color: #EF476F;
+  --link-hover-color: #FF7694;
+  --font-family: 'Roboto', sans-serif;
+  --base-font-size: 1.25rem;
+  --line-height: 1.6;
+  --border-radius: 12px;
+  --spacing-unit: 1.5rem;
+}
+
+/* Reset some default styles */
+body, h1, h2, h3, h4, h5, h6, p, ul, li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Typography and Layout */
+body {
+  font-family: var(--font-family);
+  font-size: var(--base-font-size);
+  line-height: var(--line-height);
+  background-color: var(--background-color);
+  color: var(--secondary-color);
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-unit);
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: var(--spacing-unit);
+}
+
+h3 {
+  font-size: 2rem;
+  margin-bottom: var(--spacing-unit);
+}
+
+h4 {
+  font-size: 1.8rem;
+  margin-bottom: var(--spacing-unit);
+}
+
+h5 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-unit);
+}
+
+h6 {
+  font-size: 1.3rem;
+  margin-bottom: var(--spacing-unit);
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-unit);
+}
+
+#content {
+  width: 100%;
+}
+
+/* Code Blocks */
+pre {
+  overflow-x: auto;
+  background-color: var(--code-background);
+  color: var(--secondary-color);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-unit);
+  position: relative;
+  border: 8px solid var(--quote-border-color);
+}
+
+pre code {
+  font-size: 1.2rem;
+}
+
+code {
+  overflow-x: auto;
+}
+
+/* Links */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--link-hover-color);
+}
+
+/* Images */
+img {
+  border: 5px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  max-width: 100%;
+  height: auto;
+  margin-bottom: var(--spacing-unit);
+}
+
+/* Blockquotes */
+blockquote {
+  background-color: #333;
+  padding: var(--spacing-unit);
+  border-left: 8px solid var(--quote-border-color);
+  margin: 0 0 var(--spacing-unit);
+  border-radius: var(--border-radius);
+}
+
+/* Notes */
+.note {
+  position: relative;
+  display: inline-block;
+  background-color: #242424;
+  border-left: 0.35rem solid var(--note-border-color);
+  padding: var(--spacing-unit);
+  margin: var(--spacing-unit) 0;
+  font-style: italic;
+  font-size: 1.2rem;
+  line-height: var(--line-height);
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.note:before {
+  content: "Note:";
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--note-border-color);
+  display: block;
+  position: absolute;
+  top: 0.2rem;
+  left: 1rem;
+}
+
+.note p {
+  margin: 0;
+  padding: 0;
+}
+
+.note-heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: var(--spacing-unit);
+}
+
+/* Lists and Paragraphs */
+ul, ol {
+  margin-left: var(--spacing-unit);
+  margin-bottom: var(--spacing-unit);
+}
+
+p {
+  margin-bottom: var(--spacing-unit);
+}
+
+ul ul, ul ol, ol ul, ol ol {
+  margin-left: calc(2 * var(--spacing-unit));
+}
+
+/* Buttons */
+button {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  font-family: var(--font-family);
+  font-size: 1.3rem;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+}
+
+button:hover {
+  background-color: var(--link-hover-color);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Button animation */
+button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  transform: scale(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Media Query for Mobile Devices (max-width: 768px) */
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.8rem;
+  }
+
+  h4 {
+    font-size: 1.6rem;
+  }
+
+  h5 {
+    font-size: 1.4rem;
+  }
+
+  h6 {
+    font-size: 1.2rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  pre {
+    font-size: 1rem;
+  }
+
+  .note {
+    font-size: 1rem;
+  }
+
+  .note-heading {
+    font-size: 2rem;
+  }
+
+}

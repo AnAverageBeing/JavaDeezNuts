@@ -1,0 +1,88 @@
+/* Reset some default styles */
+body, html {
+    margin: 0;
+    padding: 0;
+}
+
+/* Mobile-first styles */
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--background-color);
+    color: var(--secondary-color);
+    padding: 1rem;
+}
+
+.site-name {
+    font-family: var(--font-family);
+    font-size: 1.65rem;
+    color: var(--primary-color);
+    font-weight: bolder;
+}
+
+/* Responsive styles for larger screens */
+@media screen and (min-width: 768px) {
+    .site-name {
+        font-size: 2rem; /* 32px (2 * 16px) */
+    }
+}
+
+.navbar-left {
+    flex: 1;
+}
+
+.navbar-middle {
+    flex: 2;
+    text-align: center;
+}
+
+.navbar-right {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-bar {
+    padding: 0.3125rem 0.625rem;
+    border: 0.125rem solid var(--primary-color);
+    border-radius: 1.25rem;
+    font-family: var(--font-family);
+}
+
+.search-button {
+    margin-left: 0.625rem;
+    padding: 0.3125rem 0.625rem;
+    border: none;
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+    border-radius: 1.25rem;
+    font-family: var(--font-family);
+    cursor: pointer;
+}
+
+.discord-thing {
+    font-size: 1.65rem;
+}
+
+/* Responsive styles for smaller screens */
+@media screen and (max-width: 767px) {
+    .navbar-left, .navbar-middle, .navbar-right {
+        flex: 100%;
+        text-align: center;
+    }
+
+    .navbar-right {
+        justify-content: center; /* Center the items for small screens */
+        margin-top: 1rem; /* Add some spacing between the search bar and Discord link */
+    }
+
+    .search-bar,
+    .search-button {
+        margin-bottom: 1rem; /* Add some vertical spacing between the items */
+    }
+    .discord-thing {
+        font-size: 0.75rem;
+    }
+}
