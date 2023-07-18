@@ -91,6 +91,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// Log the request data
 	go logRequestData(r)
 
+	cacheParam := r.URL.Query().Get("cache")
+	useCache := cacheParam != "false"
+
 	// Get the requested path from the URL and convert it to the relative file path.
 	requestedPath := strings.TrimPrefix(r.URL.Path, "/")
 	filePath := filepath.Join(repoRoot, requestedPath)
@@ -98,7 +101,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		filePath = "web/java/Home.md"
 	}
 	// Fetch the content of the Markdown file from GitHub.
-	mdContent, err := utils.FetchFileFromGitHub(filePath, false)
+	mdContent, err := utils.FetchFileFromGitHub(filePath, useCache)
 	if err != nil {
 		http.Error(w, "Error fetching file: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -117,8 +120,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		Content: htmlContent,
 	}
 
-	cacheParam := r.URL.Query().Get("cache")
-	useCache := cacheParam != "false"
 	// Render the template with the data.
 	renderTemplate(w, "layout.html", data, useCache)
 }
