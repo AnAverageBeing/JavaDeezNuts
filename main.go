@@ -196,7 +196,7 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/static/", handleStaticFile)
 
-	utils.StartWebhookReceiver()
+	go utils.StartWebhookReceiver()
 
 	if *useHTTP2 {
 		http2Enabled := &http.Server{
