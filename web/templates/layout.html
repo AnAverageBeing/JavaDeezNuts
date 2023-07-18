@@ -6,9 +6,12 @@
     <title>{{.Title}} - Java Deez Nuts</title>
     <link rel="icon" type="image/svg" href="/static/favicon.svg">
     
-    <link rel="stylesheet" href="/static/styles/styles.css">
-    <link rel="stylesheet" href="/static/styles/navigation.css">
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript> 
 
+    <link rel="preload" href="navigation.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="navigation.css"></noscript> 
+    
     <!-- Include Highlight.js and your existing CSS styles -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/tokyo-night-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
