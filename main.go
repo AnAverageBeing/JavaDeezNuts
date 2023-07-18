@@ -196,8 +196,6 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/static/", handleStaticFile)
 
-	go utils.StartWebhookReceiver()
-
 	if *useHTTP2 {
 		http2Enabled := &http.Server{
 			Addr:    fmt.Sprintf(":%d", *port),
