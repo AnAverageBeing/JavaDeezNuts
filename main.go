@@ -168,7 +168,7 @@ func getGeoLocation(ipAddress string) string {
 	defer response.Body.Close()
 
 	var geoInfo struct {
-		Success bool   `json:"status"`
+		Success string `json:"status"`
 		City    string `json:"city"`
 		Region  string `json:"regionName"`
 		Country string `json:"country"`
@@ -180,7 +180,7 @@ func getGeoLocation(ipAddress string) string {
 		return "Unknown"
 	}
 
-	if !geoInfo.Success {
+	if strings.Compare(geoInfo.Success, "success") == 0 {
 		return "UNABLE TO GET"
 	}
 
