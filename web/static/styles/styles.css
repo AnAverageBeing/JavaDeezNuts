@@ -3,7 +3,7 @@
   --primary-color: #EF476F;
   --secondary-color: #F8F8F8;
   --background-color: #1B1B1B;
-  --code-background: #413c3c;
+  --code-background: #2B2B2B;
   --quote-border-color: #EF476F;
   --note-border-color: #EF476F;
   --link-color: #EF476F;
@@ -88,6 +88,7 @@ pre code {
 
 code {
   overflow-x: auto;
+  border: 2px solid var(--primary-color);
 }
 
 /* Links */
