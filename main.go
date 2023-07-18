@@ -22,17 +22,15 @@ const (
 	repoRoot      = "web"
 	templateDir   = "templates"
 	staticDir     = "static"
-	logFilePath   = "access_logs.json" // Path to the log file
+	logFilePath   = "access_logs.json"
 	ipAPIEndpoint = "http://ip-api.com/json/"
 )
 
-// Data is a struct to hold the data for rendering the template.
 type Data struct {
 	Title   string
 	Content template.HTML
 }
 
-// AccessLog represents the logged data for each request.
 type AccessLog struct {
 	Time        string `json:"time"`
 	IP          string `json:"ip"`
@@ -41,10 +39,9 @@ type AccessLog struct {
 	GeoLocation string `json:"geo_location"`
 }
 
-// renderTemplate reads the template from the file and renders it with the given data.
-func renderTemplate(w http.ResponseWriter, tmpl string, data Data, useCache bool) {
+func renderTemplate(w http.ResponseWriter, tmpl string, data Data) {
 	tmplPath := filepath.Join(repoRoot, templateDir, tmpl)
-	tmplContent, err := utils.FetchFileFromGitHub(tmplPath, useCache)
+	tmplContent, err := utils.GetFileContent(tmplPath)
 	if err != nil {
 		http.Error(w, "Error fetching template: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -63,16 +60,14 @@ func renderTemplate(w http.ResponseWriter, tmpl string, data Data, useCache bool
 	}
 }
 
-// markdownToHTML converts Markdown content to HTML.
 func markdownToHTML(mdContent string) template.HTML {
 	htmlContent := blackfriday.Run([]byte(mdContent))
 	return template.HTML(htmlContent)
 }
 
-// handleStaticFile fetches and serves the static files from the GitHub repository.
 func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 	filePath := r.URL.Path[len("/static/"):]
-	content, err := utils.FetchFileFromGitHub(filepath.Join(repoRoot, staticDir, filePath), true)
+	content, err := utils.GetFileContent(filepath.Join(repoRoot, staticDir, filePath))
 	if err != nil {
 		http.Error(w, "Error fetching static file: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -86,47 +81,37 @@ func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(content))
 }
 
-// handler retrieves the Markdown file from the GitHub repo, converts it to HTML, and serves it using the layout template.
 func handler(w http.ResponseWriter, r *http.Request) {
 	// Log the request data
 	go logRequestData(r)
 
-	cacheParam := r.URL.Query().Get("cache")
-	useCache := cacheParam != "false"
-
-	// Get the requested path from the URL and convert it to the relative file path.
 	requestedPath := strings.TrimPrefix(r.URL.Path, "/")
 	filePath := filepath.Join(repoRoot, requestedPath)
 	if requestedPath == "" {
 		filePath = "web/java/Home.md"
 	}
-	// Fetch the content of the Markdown file from GitHub.
-	mdContent, err := utils.FetchFileFromGitHub(filePath, useCache)
+
+	mdContent, err := utils.GetFileContent(filePath)
 	if err != nil {
 		http.Error(w, "Error fetching file: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Convert the Markdown content to HTML.
 	htmlContent := markdownToHTML(mdContent)
 
 	// Get the title of the page from the first line of the Markdown file.
 	lines := strings.Split(mdContent, "\n")
 	title := lines[0]
 
-	// Create the data for rendering the template.
 	data := Data{
 		Title:   title,
 		Content: htmlContent,
 	}
 
-	// Render the template with the data.
-	renderTemplate(w, "layout.html", data, useCache)
+	renderTemplate(w, "layout.html", data)
 }
 
-// logRequestData logs the relevant data of the incoming request.
 func logRequestData(r *http.Request) {
-	// Get the request time
 	requestTime := time.Now().Format(time.ANSIC)
 
 	// Get the user's IP address from the CF-Connecting-IP header
@@ -136,16 +121,12 @@ func logRequestData(r *http.Request) {
 		ipAddress, _, _ = net.SplitHostPort(r.RemoteAddr)
 	}
 
-	// Get the user's user agent
 	userAgent := r.UserAgent()
 
-	// Get the requested path
 	requestedPath := strings.TrimPrefix(r.URL.Path, "/")
 
-	// Get the user's geo-location from ip-api service
 	geoLocation := getGeoLocation(ipAddress)
 
-	// Prepare the log data
 	logData := AccessLog{
 		Time:        requestTime,
 		IP:          ipAddress,
@@ -154,15 +135,12 @@ func logRequestData(r *http.Request) {
 		GeoLocation: geoLocation,
 	}
 
-	// Log the data to console
 	fmt.Printf("[%s] IP: %s Requested: %s, GeoLocation: %s\n",
 		requestTime, ipAddress, requestedPath, geoLocation)
 
-	// Log the data to a JSON file
 	writeAccessLog(logData)
 }
 
-// getGeoLocation retrieves geo-location information from the ip-api service based on the given IP address.
 func getGeoLocation(ipAddress string) string {
 	response, err := http.Get(ipAPIEndpoint + ipAddress)
 	if err != nil {
@@ -188,12 +166,10 @@ func getGeoLocation(ipAddress string) string {
 		return "UNABLE TO GET"
 	}
 
-	// Construct a string containing the relevant geo-location information
 	geoLocation := fmt.Sprintf("%s, %s, %s", geoInfo.City, geoInfo.Region, geoInfo.Country)
 	return geoLocation
 }
 
-// writeAccessLog writes the access log data to a JSON file.
 func writeAccessLog(data AccessLog) {
 	logFile, err := os.OpenFile(logFilePath, os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0644)
 	if err != nil {
@@ -209,11 +185,10 @@ func writeAccessLog(data AccessLog) {
 	}
 
 	logFile.Write(logData)
-	logFile.Write([]byte("\n")) // Add a new line after each log entry
+	logFile.Write([]byte("\n"))
 }
 
 func main() {
-	// Parse command-line flags
 	port := flag.Int("p", 8080, "Port number to run the server on")
 	useHTTP2 := flag.Bool("http2", true, "Enable HTTP/2")
 	flag.Parse()
@@ -221,7 +196,8 @@ func main() {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/static/", handleStaticFile)
 
-	// Enable HTTP/2 if specified
+	utils.StartWebhookReceiver()
+
 	if *useHTTP2 {
 		http2Enabled := &http.Server{
 			Addr:    fmt.Sprintf(":%d", *port),
@@ -234,8 +210,6 @@ func main() {
 		log.Fatal(http2Enabled.ListenAndServe())
 		return
 	}
-
-	// Otherwise, continue with HTTP/1.1
 
 	fmt.Printf("Starting server on http://localhost:%d\n", *port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
