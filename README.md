@@ -1,5 +1,7 @@
 # Java Deez Nuts
 
+**LIVE at** : [gigacat.dev](https://gigacat.dev/)
+
 ## How to run
 
 - install go https://go.dev/doc/install
