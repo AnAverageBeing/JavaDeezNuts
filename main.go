@@ -61,6 +61,8 @@ func handleStaticFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Set("Content-Type", http.DetectContentType([]byte(content)))
+
 	if strings.HasSuffix(filePath, ".css") {
 		w.Header().Set("Content-Type", "text/css")
 	}
@@ -72,7 +74,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	// Get the requested path from the URL and convert it to the relative file path.
 	requestedPath := strings.TrimPrefix(r.URL.Path, "/")
 	filePath := filepath.Join(repoRoot, requestedPath)
-
+	if requestedPath == "" {
+		filePath = "web/java/Home.md"
+	}
 	// Fetch the content of the Markdown file from GitHub.
 	mdContent, err := utils.FetchFileFromGitHub(filePath)
 	if err != nil {

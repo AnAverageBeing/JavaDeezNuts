@@ -12,7 +12,7 @@ import (
 const (
 	username      = "AnAverageBeing"
 	repo          = "JavaDeezNuts"
-	maxBufferSize = 8192
+	maxBufferSize = 2048
 )
 
 var httpClient = &http.Client{
