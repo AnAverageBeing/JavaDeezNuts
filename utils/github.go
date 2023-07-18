@@ -33,9 +33,9 @@ type cachedResult struct {
 }
 
 // FetchFileFromGitHub fetches a file from a public GitHub repository and returns its contents as a string.
-// It supports optional caching if the `cache` parameter is set to true.
 func FetchFileFromGitHub(filePath string, useCache bool) (string, error) {
 	cacheKey := username + "/" + repo + "/" + filePath
+	var usedCachedResponse bool
 
 	if useCache {
 		// Check if the file is present in the cache and not expired.
@@ -44,9 +44,13 @@ func FetchFileFromGitHub(filePath string, useCache bool) (string, error) {
 		cacheLock.RUnlock()
 
 		if found && time.Since(cached.timestamp) < cacheDuration {
+			usedCachedResponse = true
+			fmt.Println("Served a cached response.")
 			return cached.content, nil
 		}
 	}
+
+	startTime := time.Now()
 
 	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/%s/main/%s", username, repo, filePath)
 	resp, err := httpClient.Get(url)
@@ -74,7 +78,7 @@ func FetchFileFromGitHub(filePath string, useCache bool) (string, error) {
 
 	content := sb.String()
 
-	if useCache {
+	if useCache && !usedCachedResponse {
 		// Update the cache with the fetched content and the current timestamp.
 		cacheLock.Lock()
 		cache[cacheKey] = cachedResult{
@@ -82,6 +86,20 @@ func FetchFileFromGitHub(filePath string, useCache bool) (string, error) {
 			timestamp: time.Now(),
 		}
 		cacheLock.Unlock()
+	}
+
+	elapsedTime := time.Since(startTime)
+	fmt.Printf("Time taken: %v\n", elapsedTime)
+
+	if useCache && usedCachedResponse {
+		// If used a cached response before, return the latest cached result.
+		cacheLock.RLock()
+		cached, found := cache[cacheKey]
+		cacheLock.RUnlock()
+
+		if found {
+			return cached.content, nil
+		}
 	}
 
 	return content, nil
