@@ -119,7 +119,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	cacheParam := r.URL.Query().Get("cache")
 	useCache := cacheParam != "false"
 	// Render the template with the data.
-	go renderTemplate(w, "layout.html", data, useCache)
+	renderTemplate(w, "layout.html", data, useCache)
 }
 
 // logRequestData logs the relevant data of the incoming request.
