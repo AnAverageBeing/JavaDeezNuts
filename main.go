@@ -2,6 +2,7 @@ package main
 
 import (
 	"JavaDeezNuts/utils"
+	"flag"
 	"fmt"
 	"html/template"
 	"log"
@@ -102,9 +103,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	port := flag.Int("p", 8080, "Port number to run the server on")
+	flag.Parse()
+
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/static/", handleStaticFile)
 
-	fmt.Println("Starting server on http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	fmt.Printf("Starting server on http://localhost:%d\n", *port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", *port), nil))
 }
