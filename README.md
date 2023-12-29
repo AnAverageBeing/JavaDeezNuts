@@ -11,4 +11,4 @@
 
 ## Change port
 
-do `.server -p 80` to run on port 80 u can also use any other port
+do `./server -p 80` to run on port 80 u can also use any other port
